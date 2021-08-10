@@ -16,6 +16,8 @@
 
  - Запуска для поднятия ELK+fealbeat
 
+ Перейти в папку с проектом пример `cd /srv/elk-docker-ansible`
+
 `sudo ansible-playbook -i inventory/hosts.yml --ask-pass elk.yml`
 
  * если нужно запустить что то конкретное использвать теги
