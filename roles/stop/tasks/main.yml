@@ -1,0 +1,84 @@
+---
+- name: Remove elastic01 search container
+  docker_container:
+    name: "{{ elasticsearch_hostname01 }}"
+    state: absent
+  tags:
+  - elasticsearch
+
+- name: Remove elastic02 search container
+  docker_container:
+    name: "{{ elasticsearch_hostname02 }}"
+    state: absent
+  tags:
+  - elasticsearch
+
+- name: Stop elastic search conf dir
+  file:
+    state: absent
+    path: "{{ elasticsearch_conf_dir }}"
+  tags:
+  - elasticsearch
+
+- name: Remove kibana container
+  docker_container:
+    name: "{{ kibana_hostname01 }}"
+    state: absent
+  tags:
+  - kibana
+
+- name: Remove kibana container
+  docker_container:
+    name: "{{ kibana_hostname01 }}"
+    state: absent
+  tags:
+  - kibana
+
+- name: Remove logstash container
+  docker_container:
+    name: "{{ logstash_hostname01 }}"
+    state: absent
+  tags:
+  - logstash
+
+- name: Stop logstash conf dir
+  file:
+    state: absent
+    path: "{{ logstash_conf_dir }}"
+  tags:
+  - logstash
+
+- name: Remove nginx container
+  docker_container:
+    name: "{{ nginx_hostname }}"
+    state: absent
+  tags:
+  - nginx
+
+- name: Stop nginx conf dir
+  file:
+    state: absent
+    path: "{{ nginx_conf_dir }}"
+  tags:
+  - nginx
+
+- name: Remove filebeat container
+  docker_container:
+    name: "{{ filebeat_hostname }}"
+    state: absent
+  tags:
+  - filebeat
+
+- name: Stop filebeat conf dir
+  file:
+    state: absent
+    path: "{{ filebeat_conf_dir }}"
+  tags:
+  - filebeat
+
+- name: Remove docker network
+  docker_network:
+    name: "{{ network_name }}"
+    state: absent
+  tags:
+  - docker

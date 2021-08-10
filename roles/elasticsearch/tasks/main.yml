@@ -1,0 +1,76 @@
+- name: Create elastic01 search volume
+  docker_volume:
+    name: esdata01
+    driver: local
+- name: Create elastic02 search volume
+  docker_volume:
+    name: esdata02
+    driver: local
+
+- name: Start elastic01 search container
+  docker_container:
+    name: "{{ elasticsearch_hostname01 }}"
+    image: "{{ elasticsearch_image }}"
+    ports:
+    - 9200:9200    
+    env:
+#      ELASTIC_PASSWORD: "{{ elastic_password }}"
+#      discovery.type: "single-node"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+#      xpack.security.enabled: "true"
+      xpack.monitoring.collection.enabled: "true"
+#      xpack.security.transport.ssl.enabled: "true"
+#      xpack.license.self_generated.type: basic
+      xpack.license.self_generated.type: "trial"
+      node.name: "{{ elasticsearch_hostname01 }}"
+      cluster.name: "elk-cluster"
+      discovery.seed_hosts: "{{ elasticsearch_hostname01 }},{{ elasticsearch_hostname02 }}"
+      cluster.initial_master_nodes: "{{ elasticsearch_hostname01 }},{{ elasticsearch_hostname02 }}"
+      bootstrap.memory_lock: "true"
+    volumes:
+    - "esdata01:/usr/share/elasticsearch/data"
+    ulimits:
+    - nofile:65535:65535
+    - 'memlock:-1:-1'    
+    networks:
+    - name: "{{ network_name }}"
+    state: started
+    log_driver: "{{ log_driver }}"
+    log_options:
+      max-size: "{{ log_max_size }}"
+      max-file: "{{ log_max_file }}"
+      labels: "elasticsearch01_log"
+
+
+- name: Start elastic02 search container
+  docker_container:
+    name: "{{ elasticsearch_hostname02 }}"
+    image: "{{ elasticsearch_image }}"
+    env:
+#      ELASTIC_PASSWORD: "{{ elastic_password }}"
+#      discovery.type: "single-node"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+#      xpack.security.enabled: "true"
+      xpack.monitoring.collection.enabled: "true"
+#      xpack.security.transport.ssl.enabled: "true"
+#      xpack.license.self_generated.type: basic
+      xpack.license.self_generated.type: "trial"
+      node.name: "{{ elasticsearch_hostname02 }}"
+      cluster.name: "elk-cluster"
+      discovery.seed_hosts: "{{ elasticsearch_hostname01 }},{{ elasticsearch_hostname02 }}"
+      cluster.initial_master_nodes: "{{ elasticsearch_hostname01 }},{{ elasticsearch_hostname02 }}"
+#      bootstrap.memory_lock: "true"      
+    volumes:
+    - "esdata02:/usr/share/elasticsearch/data"
+    ulimits:
+    - nofile:65535:65535
+    - 'memlock:-1:-1'    
+    networks:
+    - name: "{{ network_name }}"
+    state: started
+    log_driver: "{{ log_driver }}"
+    log_options:
+      max-size: "{{ log_max_size }}"
+      max-file: "{{ log_max_file }}"
+      labels: "elasticsearch02_log"
+

@@ -1,0 +1,30 @@
+log_driver: "json-file"
+log_max_size: "10m"
+log_max_file: "3"
+
+server_name: elk
+network_name: elk_network
+
+nginx_image: nginx:1.15-alpine
+nginx_hostname: nginx01
+nginx_conf_dir: /usr/share/nginx
+
+elasticsearch_image: elasticsearch:7.14.0
+elasticsearch_hostname01: elasticsearch01
+elasticsearch_hostname02: elasticsearch02
+elasticsearch_conf_dir: /usr/share/elasticsearch
+
+kibana_image: kibana:7.14.0
+kibana_hostname01: kibana01
+
+logstash_image: logstash:7.14.0
+logstash_hostname01: logstash
+logstash_conf_dir: /usr/share/logstash
+
+filebeat_image: elastic/filebeat:7.14.0
+filebeat_hostname: filebeat01
+filebeat_servername: filebeat.elk
+filebeat_conf_dir: /usr/share/filebeat
+
+elastic_password: "changeme"
+kibana_password: "changeme"

@@ -1,0 +1,19 @@
+- name: Start kibana01 container
+  docker_container:
+    name: "{{ kibana_hostname01 }}"
+    image: "{{ kibana_image }}"
+    env:
+      servername: "{{ kibana_hostname01 }}"
+      ELASTICSEARCH_HOSTS: "http://{{ elasticsearch_hostname01 }}:9200"
+      monitoring.ui.container.elasticsearch.enabled: "true"
+      ELASTICSEARCH_USERNAME: "elastic"
+      ELASTICSEARCH_PASSWORD: "{{ kibana_password }}"
+#    ports:
+#    - 5601:5601
+    networks:
+    - name: "{{ network_name }}"
+    log_driver: "{{ log_driver }}"
+    log_options:
+      max-size: "{{ log_max_size }}"
+      max-file: "{{ log_max_file }}"
+      labels: "kibana_log"

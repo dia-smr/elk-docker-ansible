@@ -1,0 +1,40 @@
+- name: Ensure nginx conf dir exists
+  file:
+    path: "{{ nginx_conf_dir }}"
+    state: directory
+
+- name: Copy nginx conf
+  template: src={{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: 'templates/nginx.conf', dest: '{{ nginx_conf_dir }}/nginx.conf' } 
+    - { src: 'templates/.htpasswd', dest: '{{ nginx_conf_dir }}/.htpasswd' } 
+  notify: Restart nginx container
+
+- name: Start nginx container
+  docker_container:
+    name: "{{ nginx_hostname }}"
+    image: "{{ nginx_image }}"
+    ports:
+    - 80:80
+    - 5000:5000
+    - 5044:5044
+#    - 9200:9200
+    volumes:
+    - "{{ nginx_conf_dir }}/:/etc/nginx/conf.d/:ro"
+    networks:
+    - name: "{{ network_name }}"
+    log_driver: "{{ log_driver }}"
+    log_options:
+      max-size: "{{ log_max_size }}"
+      max-file: "{{ log_max_file }}"
+      labels: "nginx_log"
+#----------------------      
+#    log_driver: "syslog"
+#      syslog-address: tcp://{{ logstash_hostname01 }}:5044
+#      syslog-facility: "daemon"
+#      tag: "nginx"
+#----------------------    
+#    log_driver: "gelf"
+ #     log_options:
+#        gelf-address: "tcp://{{ logstash_hostname01 }}:5044"
+#        tag: "nginx-log"    
